@@ -1,0 +1,180 @@
+<style>
+    :root {
+        --bg1: #0f172a;
+        --bg2: #1e1b4b;
+        --accent: #22d3ee;
+        --accent-2: #a78bfa;
+        --card: rgba(255, 255, 255, 0.08);
+        --text: #e2e8f0;
+        --muted: #94a3b8;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Segoe UI", Arial, sans-serif;
+        color: var(--text);
+        background: radial-gradient(circle at top right, #312e81, transparent 35%),
+                    radial-gradient(circle at bottom left, #0ea5e9, transparent 30%),
+                    linear-gradient(135deg, var(--bg1), var(--bg2));
+        display: grid;
+        place-items: center;
+        padding: 20px;
+    }
+
+    .dashboard-card {
+        width: min(900px, 100%);
+        background: var(--card);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 18px;
+        padding: 24px;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .top-bar h2 {
+        margin: 0;
+        font-size: 1.7rem;
+        letter-spacing: 0.4px;
+    }
+
+    .balance-pill {
+        margin: 0;
+        background: rgba(34, 211, 238, 0.15);
+        border: 1px solid rgba(34, 211, 238, 0.45);
+        color: #a5f3fc;
+        padding: 8px 14px;
+        border-radius: 999px;
+        font-weight: 600;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 16px;
+    }
+
+    .section {
+        background: rgba(15, 23, 42, 0.45);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 14px;
+        padding: 16px;
+    }
+
+    h3 {
+        margin: 0 0 12px;
+        color: #c4b5fd;
+    }
+
+    form {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    input {
+        flex: 1;
+        min-width: 140px;
+        border: 1px solid rgba(148, 163, 184, 0.45);
+        border-radius: 10px;
+        padding: 10px 12px;
+        background: rgba(15, 23, 42, 0.6);
+        color: var(--text);
+        outline: none;
+    }
+
+    input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.25);
+    }
+
+    button {
+        border: 0;
+        border-radius: 10px;
+        padding: 10px 14px;
+        color: #0f172a;
+        font-weight: 700;
+        cursor: pointer;
+        background: linear-gradient(90deg, var(--accent), var(--accent-2));
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 18px rgba(34, 211, 238, 0.35);
+    }
+
+    .transactions {
+        margin-top: 16px;
+    }
+
+    .txn-item {
+        margin: 8px 0;
+        padding: 10px 12px;
+        border-left: 4px solid var(--accent-2);
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        color: #dbeafe;
+    }
+
+    .empty {
+        color: var(--muted);
+        font-style: italic;
+    }
+
+    .logout-form {
+        margin-top: 20px;
+        display: flex;
+        justify-content: flex-end;
+    }
+</style>
+
+<div class="dashboard-card">
+    <div class="top-bar">
+        <h2>Dashboard</h2>
+        <p class="balance-pill">Balance: ₹ {{balance}}</p>
+    </div>
+
+    <div class="grid">
+        <section class="section">
+            <h3>Generate Payment Token</h3>
+            <form method="POST" action="/generate_token">
+                <input name="amount" placeholder="Amount" required>
+                <button>Generate</button>
+            </form>
+        </section>
+
+        <section class="section">
+            <h3>Receive Payment</h3>
+            <form method="POST" action="/verify">
+                <input name="token" placeholder="Enter Token" required>
+                <button>Verify & Receive</button>
+            </form>
+        </section>
+    </div>
+
+    <section class="section transactions">
+        <h3>Transactions</h3>
+        {% for t in transactions %}
+        <p class="txn-item">₹ {{t[3]}} at {{t[4]}}</p>
+        {% else %}
+        <p class="empty">No transactions yet.</p>
+        {% endfor %}
+    </section>
+
+    <form class="logout-form" action="/logout">
+        <button>Logout</button>
+    </form>
+</div>
